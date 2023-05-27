@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
@@ -14,7 +15,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="534.0" prefWidth="810.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="534.0" prefWidth="810.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.NoteController">
    <children>
       <BorderPane prefHeight="534.0" prefWidth="810.0">
          <bottom>
@@ -31,7 +32,10 @@
                <children>
                   <MenuBar layoutX="664.0" layoutY="10.0" prefHeight="28.0" prefWidth="125.0">
                     <menus>
-                      <Menu fx:id="deleteNote" mnemonicParsing="false" text="Delete" />
+                      <Menu fx:id="deleteNote" mnemonicParsing="false" text="Delete">
+                           <items>
+                              <MenuItem mnemonicParsing="false" text="Delete" />
+                           </items></Menu>
                         <Menu fx:id="exitNote" mnemonicParsing="false" text="Exit" />
                     </menus>
                   </MenuBar>
@@ -68,7 +72,12 @@
                               <TextArea fx:id="bodyText" prefHeight="304.0" prefWidth="649.0" />
                            </content>
                         </ScrollPane>
-                        <Button layoutX="636.0" layoutY="329.0" mnemonicParsing="false" style="-fx-background-color: #000000;" text="Save" textFill="WHITE">
+                        <Button layoutX="480.0" layoutY="329.0" mnemonicParsing="false" style="-fx-background-color: #000000;" text="Save online" textFill="WHITE">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                        <Button layoutX="596.0" layoutY="329.0" mnemonicParsing="false" style="-fx-background-color: #000000;" text="Save local" textFill="WHITE">
                            <font>
                               <Font size="14.0" />
                            </font>

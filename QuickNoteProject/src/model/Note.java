@@ -36,6 +36,14 @@ public class Note {
 	}
 	
 	/**
+	 * Second note constructor.
+	 */
+	public Note() {
+		super();
+		noteDate=LocalDate.now();
+	}
+	
+	/**
 	 * Note title getter.
 	 * @return - the note title.
 	 */
