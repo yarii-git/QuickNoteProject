@@ -75,9 +75,9 @@ public class NotePadController implements Initializable{
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		notes = FXCollections.observableArrayList();
 		
-		notes.add(new Note("Nota","Soy una nota."));
-		notes.add(new Note("Nota2","Soy una nota 2."));
-		notes.add(new Note("Nota 3","Soy una nota 3."));
+		notes.add(new Note("Nota","Soy una nota.",1));
+		notes.add(new Note("Nota2","Soy una nota 2.",2));
+		notes.add(new Note("Nota 3","Soy una nota 3.",3));
 		
 		//Connection to data base.	
 		/*try {

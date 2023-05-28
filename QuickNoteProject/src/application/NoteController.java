@@ -7,11 +7,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import model.Note;
+import java.sql.Connection;
 
 import java.sql.*;
 import javax.sql.*;
@@ -97,26 +99,89 @@ public class NoteController implements Initializable{
 	
 	/**
 	 * Method to save the note online.
-	 * @param event - on click.
+	 * @param event - on click.; 
 	 */
-	public void saveOnline(ActionEvent event) {
+	@FXML
+	public void saveOnlineAction(ActionEvent event) {
 		//TODO comprovar que sean correctos los datos.
 		//Create a new note object with users entry.
-		note = new Note(titleNote.getText(),bodyText.getText());
+		note = new Note(titleNote.getText(),bodyText.getText(),1);
+		
+		
+		/*String title = note.getTitle();
+		String body = note.getBody();*/
 		
 		//Store at data base.
 		//Connection to data base.	
 		try {
 			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
-			Statement newS = notesConnection.createStatement();
+			
+			//Statement newS = notesConnection.createStatement();
 			
 			//TODO que solo salgan las notas que queremos, con un WHERE idUser = a user logeado.
-			ResultSet result = newS.executeQuery("INSERT INTO Note (noteDate,title,body)");
+			/*ResultSet result = newS.executeQuery("INSERT INTO User(name, username, password, email) VALUES (" + title + "," + body +" )"); */
 			
+			String title = note.getTitle();
+			Date date = Date.valueOf(note.getNoteDate());
+			String body = note.getBody();
+			int userId= note.getIdUser();
+            
+			/*Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
+			alert1.setHeaderText(null);
+			alert1.setTitle("Informació");
+			alert1.setContentText("S'ha creat la nota correctament."+ date + " "+title+" "+ body+" "+userId);
+			alert1.showAndWait();*/
+            
+			String sql = "insert into Note(noteDate,title,body,idUser) values('" + date + "','" + title + "','" + body + "','" + userId + "')";
+           
+			// Hacemos la consexion para añadir el nuevo registro a usuario.
+			Statement statement = notesConnection.createStatement();
+			statement.executeUpdate(sql);
+						
+			/*PreparedStatement ps = notesConnection.prepareStatement(sql);
+            
+            ps.setString(1,note.getTitle());
+            ps.setDate(2,Date.valueOf(note.getNoteDate()));
+            ps.setString(3,note.getBody());
+            ps.setInt(4,note.getIdUser());
+            
+            ps.executeUpdate();*/
+            
+            //Confirm creation.
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText(null);
+            alert.setTitle("Informació");
+            alert.setContentText("S'ha creat la nota correctament.");
+            alert.showAndWait();
+            
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+		    alert.setHeaderText(null);
+		    alert.setTitle("Error");
+		    alert.setContentText("No s'ha pogut connectar amb la base de dades.");
+		    alert.showAndWait();
 		}
 		
+		// Careamos una instancia de la clase DatabaseConnection.
+		/*DatabaseConnection connectNow = new DatabaseConnection();
+				
+		// Obtenermos una conexión a la base de datos.
+		Connection connectDB = connectNow.getConnection();
+		
+		// Añadimos los datos a la base de datos
+		String addRegister = "INSERT INTO User(name, username) VALUES (name,username)"; 
+		
+		try {
+			
+			// Hacemos la consexion para añadir el nuevo registro a usuario.
+			Statement statement = connectDB.createStatement();
+			statement.executeUpdate(addRegister);
+			correctMessageSignIn.setText("User has been registered successfully!");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			e.getCause();
+		}*/
 		//Return to NotePad view.
 		   
 	}
