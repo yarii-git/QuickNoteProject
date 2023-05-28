@@ -1,17 +1,23 @@
 package application;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import model.Note;
 import java.sql.Connection;
 
@@ -24,7 +30,7 @@ public class NoteController implements Initializable{
 	private Menu deleteNote;
 	
 	@FXML
-	private Menu exitNote;
+	private Button exitButton;
 	
 	@FXML
 	private ScrollPane scrollNote;
@@ -73,22 +79,6 @@ public class NoteController implements Initializable{
 		//TODO 
 	}
 	
-	/**
-	 * Method to set the title note.
-	 * @param event
-	 */
-	public void setTitleNoteController(ActionEvent event) {
-		//TODO 
-	}
-	
-	/**
-	 * Method to set the body note.
-	 * @param event - 
-	 */
-	public void setBodyNoteController(ActionEvent event) {
-		//TODO 
-	}
-	
 	/**		
 	 * Method to scroll at note.
 	 * @param event
@@ -107,30 +97,18 @@ public class NoteController implements Initializable{
 		//Create a new note object with users entry.
 		note = new Note(titleNote.getText(),bodyText.getText(),1);
 		
-		
-		/*String title = note.getTitle();
-		String body = note.getBody();*/
-		
-		//Store at data base.
 		//Connection to data base.	
 		try {
 			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
 			
 			//Statement newS = notesConnection.createStatement();
 			
-			//TODO que solo salgan las notas que queremos, con un WHERE idUser = a user logeado.
-			/*ResultSet result = newS.executeQuery("INSERT INTO User(name, username, password, email) VALUES (" + title + "," + body +" )"); */
-			
+			//TODO que se ponga la id de usuario.
 			String title = note.getTitle();
 			Date date = Date.valueOf(note.getNoteDate());
 			String body = note.getBody();
 			int userId= note.getIdUser();
-            
-			/*Alert alert1 = new Alert(Alert.AlertType.INFORMATION);
-			alert1.setHeaderText(null);
-			alert1.setTitle("Informació");
-			alert1.setContentText("S'ha creat la nota correctament."+ date + " "+title+" "+ body+" "+userId);
-			alert1.showAndWait();*/
+			
             
 			String sql = "insert into Note(noteDate,title,body,idUser) values('" + date + "','" + title + "','" + body + "','" + userId + "')";
            
@@ -162,28 +140,7 @@ public class NoteController implements Initializable{
 		    alert.showAndWait();
 		}
 		
-		// Careamos una instancia de la clase DatabaseConnection.
-		/*DatabaseConnection connectNow = new DatabaseConnection();
-				
-		// Obtenermos una conexión a la base de datos.
-		Connection connectDB = connectNow.getConnection();
-		
-		// Añadimos los datos a la base de datos
-		String addRegister = "INSERT INTO User(name, username) VALUES (name,username)"; 
-		
-		try {
-			
-			// Hacemos la consexion para añadir el nuevo registro a usuario.
-			Statement statement = connectDB.createStatement();
-			statement.executeUpdate(addRegister);
-			correctMessageSignIn.setText("User has been registered successfully!");
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			e.getCause();
-		}*/
-		//Return to NotePad view.
-		   
+		openNotePadWindows();
 	}
 	
 	/**
@@ -197,21 +154,40 @@ public class NoteController implements Initializable{
 	
 	/**
 	 * Method to exit the note.
-	 * @param event
 	 */
 	@FXML
 	public void closeWindows() {
-		/*Stage stage = (Stage) exitNote.getScene().getWindow();
-		stage.close();*/
+		openNotePadWindows();
 	}
 	
 	/**
-	 * Method to get the new note.
-	 * @return - a note.
+	 * Method to change to NotePadWindows.
 	 */
-	public Note getNote() {
-        return note;
-    }
-
-	
+	private void openNotePadWindows() {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			
+			loader.setLocation(Main.class.getResource("/view/NotePadView.fxml"));
+			
+			Parent windows = loader.load();
+			
+			//NoteController controller = loader.getController();
+			
+			Scene scene = new Scene(windows);
+			Stage stage = new Stage();
+			
+			stage.setScene(scene);
+			stage.show();
+			
+			Stage myStage = (Stage) this.exitButton.getScene().getWindow();
+			myStage.close();
+			
+		} catch (IOException e) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+		    alert.setHeaderText(null);
+		    alert.setTitle("Error");
+		    alert.setContentText("No s'ha trobat la vista.");
+		    alert.showAndWait();
+		}
+	}
 }

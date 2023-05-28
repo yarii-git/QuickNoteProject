@@ -9,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
@@ -53,7 +54,7 @@ public class NotePadController implements Initializable{
 	private Menu deleteNote;
 	
 	@FXML
-	private Menu exitNotePad;
+	private Button exitButton;
 	
 	@FXML
 	private ScrollBar scrollNotes;
@@ -75,7 +76,7 @@ public class NotePadController implements Initializable{
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		notes = FXCollections.observableArrayList();
 		
-		notes.add(new Note("Nota","Soy una nota.",1));
+		/*notes.add(new Note("Nota","Soy una nota.",1));
 		notes.add(new Note("Nota2","Soy una nota 2.",2));
 		notes.add(new Note("Nota 3","Soy una nota 3.",3));
 		
@@ -94,10 +95,52 @@ public class NotePadController implements Initializable{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}*/
-		//Get the notes title.
-		for(Note note : notes) {
-			arrayListTitles.add(note.getTitle());
+		
+		
+		//Connection to data base.	
+		try {
+			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
+			
+			//TODO comprovar el id de usuario.
+			/*
+			Date date = Date.valueOf(note.getNoteDate());
+			String title = note.getTitle();
+			String body = note.getBody();
+			int userId= note.getIdUser();*/
+			
+			//
+			Statement statement = notesConnection.createStatement();
+			ResultSet sql = statement.executeQuery("SELECT title FROM Note");
+           
+			
+			while(sql.next()) {
+				arrayListTitles.add(sql.getString(1));
+			}
+			
+			//Get the notes title.
+			/*for(Note note : notes) {
+				arrayListTitles.add(note.getTitle());
+			}*/
+			
+			
+			//String title = note.getTitle();
+            
+            //Confirm creation.
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText(null);
+            alert.setTitle("Informació");
+            alert.setContentText("S'ha creat la connexió");
+            alert.showAndWait();
+            
+		} catch (SQLException e) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+		    alert.setHeaderText(null);
+		    alert.setTitle("Error");
+		    alert.setContentText("No s'ha pogut connectar amb la base de dades.");
+		    alert.showAndWait();
 		}
+		
+		
 		notesListView.setItems(arrayListTitles);
 		
 		notesListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -142,7 +185,7 @@ public class NotePadController implements Initializable{
 	/**
 	 * Method to open the note windows.
 	 */
-	public void openNoteWindows() {
+	private void openNoteWindows() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			
@@ -158,10 +201,18 @@ public class NotePadController implements Initializable{
 			
 			stage.show();
 			
+			Stage myStage = (Stage) this.exitButton.getScene().getWindow();
+			myStage.close();
+			
 		} catch (IOException e) {
-			// TODO Generar de forma gráfica el error.
-			e.printStackTrace();
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+		    alert.setHeaderText(null);
+		    alert.setTitle("Error");
+		    alert.setContentText("No s'ha trobat la vista.");
+		    alert.showAndWait();
 		}
+		
+		
 	}
 	
 	
