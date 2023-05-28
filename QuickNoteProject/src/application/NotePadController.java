@@ -6,8 +6,7 @@ import javax.sql.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -16,14 +15,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.URL;
@@ -119,21 +111,10 @@ public class NotePadController implements Initializable{
 	 */
 	@FXML
 	private void newNoteAction(ActionEvent event) {
+		openNoteWindows();
 		
-		try {		
-			FXMLLoader loader = new FXMLLoader();
+		/*try {		
 			
-			loader.setLocation(Main.class.getResource("/view/NoteView.fxml"));
-			
-			Parent windows = loader.load();
-			
-			Scene scene = new Scene(windows);
-			
-			Stage stage = new Stage();
-			
-			stage.setScene(scene);
-			
-			stage.show();
 			
 			// Cargo la vista
 			/*FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/NoteView.fxml"));
@@ -162,20 +143,48 @@ public class NotePadController implements Initializable{
 
                 // Refresco la tabla
                 this.notesListView.refresh();
-            }*/
+            }
 			
 		}catch(IOException ex){
 			ex.getMessage();
-		}
+		}*/
 		
 	}
 	
 	/**
-	 * Method to edit a note.
-	 * @param event - 
+	 * Method to open a note editor.
+	 * @param event - on click.
 	 */
-	public void editNote(ActionEvent event) {
-		//TODO 
+	@FXML
+	private void editNoteAction(ActionEvent event) {
+		openNoteWindows();
+		
+		
+	}
+	
+	/**
+	 * Method to open the note windows.
+	 */
+	public void openNoteWindows() {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			
+			loader.setLocation(Main.class.getResource("/view/NoteView.fxml"));
+			
+			Parent windows = loader.load();
+			
+			Scene scene = new Scene(windows);
+			
+			Stage stage = new Stage();
+			
+			stage.setScene(scene);
+			
+			stage.show();
+			
+		} catch (IOException e) {
+			// TODO Generar de forma gráfica el error.
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -189,27 +198,22 @@ public class NotePadController implements Initializable{
 	
 	
 	/**
-	 * Method to exit the note.
-	 * @param event
+	 * Method to close the NotePad.
+	 * @param event - on click.
 	 */
 	@FXML
-	public void cancelButtonOnAction(ActionEvent event) {
-		// Cerramos el login
-		/*Stage stage = (Stage) cancelButton.getScene().getWindow();
-		stage.close();*/
+	private void exitNotePad(ActionEvent event) {
+		Node source = (Node) event.getSource();
+	    Stage stage = (Stage) source.getScene().getWindow();
+	    stage.close();
 	}
+	
 	
 	/**
 	 * Method to scroll at notes windows.
 	 * @param event - 
 	 */
-	public void scrollNotes(ActionEvent event) {
-		//TODO 
-	}
-
-	
-	public void saveLocal() {
-		
-		
-	}
+	/*public void scrollNotes(ActionEvent event) {
+		//TODO to implement.
+	}*/
 }

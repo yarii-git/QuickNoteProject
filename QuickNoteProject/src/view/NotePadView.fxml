@@ -35,14 +35,14 @@
                         <Font size="17.0" />
                      </font>
                   </Label>
-                  <Button layoutX="769.0" layoutY="13.0" mnemonicParsing="false" text="X" />
+                  <Button layoutX="769.0" layoutY="13.0" mnemonicParsing="false" onAction="#exitNotePad" text="X" />
                   <Separator layoutX="-3.0" layoutY="33.0" prefHeight="31.0" prefWidth="816.0" />
                   <MenuBar layoutX="679.0" layoutY="12.0">
                     <menus>
                       <Menu mnemonicParsing="false" text="File">
                         <items>
                           <MenuItem mnemonicParsing="false" onAction="#newNoteAction" text="New" />
-                              <MenuItem mnemonicParsing="false" onAction="#newNoteAction" text="Edit" />
+                              <MenuItem mnemonicParsing="false" onAction="#editNoteAction" text="Edit" />
                               <MenuItem mnemonicParsing="false" onAction="#newNoteAction" text="Open local File" />
                               <MenuItem mnemonicParsing="false" onAction="#newNoteAction" text="Delete" />
                         </items>
