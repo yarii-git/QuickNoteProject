@@ -13,6 +13,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import model.Note;
 
+import java.sql.*;
+import javax.sql.*;
+
 public class NoteController implements Initializable{
 	//Variables from NoteView
 	@FXML
@@ -36,9 +39,12 @@ public class NoteController implements Initializable{
 	@FXML
 	private Button saveLocalB;
 	
-	private String note;
+	private Note note;
 
-    private ObservableList<String> notes;
+	/**
+	 * 
+	 */
+    //private ObservableList<Note> notes;
 
     /**
      * Initializes the controller class.
@@ -47,10 +53,14 @@ public class NoteController implements Initializable{
     public void initialize(URL url, ResourceBundle rb) {
 
     }
-
-    public void initAttributtes(ObservableList<String> notes) {
+    
+    /**
+     * Method to initialize the notes ObservableList
+     * @param notes
+     */
+   /* public void initAttributtes(ObservableList<Note> notes) {
         this.notes = notes;
-    }
+    }*/
 
 	
 	/**
@@ -87,10 +97,28 @@ public class NoteController implements Initializable{
 	
 	/**
 	 * Method to save the note online.
-	 * @param event - 
+	 * @param event - on click.
 	 */
 	public void saveOnline(ActionEvent event) {
-		//TODO 
+		//TODO comprovar que sean correctos los datos.
+		//Create a new note object with users entry.
+		note = new Note(titleNote.getText(),bodyText.getText());
+		
+		//Store at data base.
+		//Connection to data base.	
+		try {
+			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
+			Statement newS = notesConnection.createStatement();
+			
+			//TODO que solo salgan las notas que queremos, con un WHERE idUser = a user logeado.
+			ResultSet result = newS.executeQuery("INSERT INTO Note (noteDate,title,body)");
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		//Return to NotePad view.
+		   
 	}
 	
 	/**
@@ -112,22 +140,11 @@ public class NoteController implements Initializable{
 		stage.close();*/
 	}
 	
-	public void saveLocal() {
-		// Carga la image del logo atravez de la ruta donde se encuantra.
-		
-		/*File logoFile = new File("/home/nasera/git/Repository_YN/Project_QuickNote/Image/Captura desde 2023-05-26 06-21-34.png");
-		Image logoImage = new Image(logoFile.toURI().toString());
-		imageLogo.setImage(logoImage);*/
-		
-		// Carga la image del icono atravez de la ruta donde se encuantra.
-		
-		/*File iconFile = new File("/home/nasera/git/Repository_YN/Project_QuickNote/Image/Captura desde 2023-05-26 06-35-02.png");
-		Image iconImage = new Image(iconFile.toURI().toString());
-		ImageIcon.setImage(iconImage);*/
-		
-	}
-	
-	public String getNote() {
+	/**
+	 * Method to get the new note.
+	 * @return - a note.
+	 */
+	public Note getNote() {
         return note;
     }
 

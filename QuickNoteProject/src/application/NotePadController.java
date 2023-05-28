@@ -19,6 +19,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
@@ -59,12 +61,23 @@ public class NotePadController implements Initializable{
 	@FXML
 	private ListView<String> notesListView;
 	
+	/**
+	 * ObservableList to store the note objects.
+	 */
+	private ObservableList<Note> notes;
 	
-	private ObservableList<String> notes;
+	/**
+	 * ObservableList to store the notes title.
+	 */
+	private ObservableList<String> arrayListTitles = FXCollections.observableArrayList();;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		notes = FXCollections.observableArrayList("Hola","soy","una","lista");
+		notes = FXCollections.observableArrayList();
+		
+		notes.add(new Note("Nota","Soy una nota."));
+		notes.add(new Note("Nota2","Soy una nota 2."));
+		notes.add(new Note("Nota 3","Soy una nota 3."));
 		
 		//Connection to data base.	
 		/*try {
@@ -81,8 +94,11 @@ public class NotePadController implements Initializable{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}*/
-		
-		notesListView.setItems(notes);
+		//Get the notes title.
+		for(Note note : notes) {
+			arrayListTitles.add(note.getTitle());
+		}
+		notesListView.setItems(arrayListTitles);
 		
 		notesListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 	}
@@ -112,43 +128,6 @@ public class NotePadController implements Initializable{
 	@FXML
 	private void newNoteAction(ActionEvent event) {
 		openNoteWindows();
-		
-		/*try {		
-			
-			
-			// Cargo la vista
-			/*FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/NoteView.fxml"));
-
-            // Cargo la ventana
-            Parent root = loader.load();
-
-            // Cojo el controlador
-            NoteController controller = loader.getController();
-
-            // Creo el Scene
-            Scene scene = new Scene(root);
-            
-            Stage stage = new Stage();
-            
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(scene);
-            stage.showAndWait();*/
-
-            // cojo la persona devuelta
-           /* String n = controller.getNote();
-            
-            if (n != null) {
-                // Añado la persona
-                this.notes.add(n);
-
-                // Refresco la tabla
-                this.notesListView.refresh();
-            }
-			
-		}catch(IOException ex){
-			ex.getMessage();
-		}*/
-		
 	}
 	
 	/**
@@ -158,8 +137,6 @@ public class NotePadController implements Initializable{
 	@FXML
 	private void editNoteAction(ActionEvent event) {
 		openNoteWindows();
-		
-		
 	}
 	
 	/**
