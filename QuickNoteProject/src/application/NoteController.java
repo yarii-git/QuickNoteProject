@@ -2,11 +2,14 @@ package application;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.collections.ObservableList;
@@ -58,8 +61,16 @@ public class NoteController implements Initializable{
 	@FXML
 	private Button saveLocalB;
 	
+	/**
+	 * A variable to store a create note.
+	 */
 	private Note note;
-
+	
+	/**
+	 * A variable to store an local file.
+	 */
+	private static boolean openFile;
+	
 	/**
 	 * 
 	 */
@@ -70,7 +81,15 @@ public class NoteController implements Initializable{
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+    	
+    }
+    
+    /**
+     * Method to initialize openFile.
+     * @param f -a File.
+     */
+    public static void initializeOpenFile(Boolean f) {
+    	openFile=f;
     }
     
     /**
@@ -104,8 +123,8 @@ public class NoteController implements Initializable{
 	 */
 	@FXML
 	public void saveOnlineAction(ActionEvent event) {
-		//TODO comprovar que sean correctos los datos.
 		//Create a new note object with users entry.
+		createNote();
 		note = new Note(titleNote.getText(),bodyText.getText(),1);
 		
 		//Connection to data base.	
@@ -158,42 +177,77 @@ public class NoteController implements Initializable{
 	 * Method to save the note at local drive.
 	 * @param event
 	 */
-	public void saveLocal(ActionEvent event) {
+	@FXML
+	private void saveLocal() {
 		
-		//TODO ESTO ES LO QUE ESTOY HACIENDO AHORA
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText(null);
+        alert.setTitle("Informació");
+        alert.setContentText("Funciona");
+        alert.showAndWait();
 		
-		JFileChooser jfc=new JFileChooser();
-		
-		/*if(fnameContainer != null){
-			jfc.setCurrentDirectory(fnameContainer);		
-			jfc.setSelectedFile(fnameContainer);
-		}
-		else {
-			jfc.setCurrentDirectory(new File("."));
-			jfc.setSelectedFile(new File("Untitled.txt"));
-		}
-		
-		int ret=jfc.showSaveDialog(null);
+        //Create a note with user entry.
+        createNote();
+      		
+		//Save as if the file exists on the disk.
+		if(!openFile) {
+			//Create a file selector
+			JFileChooser saveFile=new JFileChooser();
 			
-		if(ret == JFileChooser.APPROVE_OPTION){
-			try{
+			//Save the user choose.
+			int opc = saveFile.showSaveDialog(null);
+			
+			//Check user option
+			if(opc == JFileChooser.APPROVE_OPTION) {
 				
-				File fyl=jfc.getSelectedFile();
-				SaveFile(fyl.getAbsolutePath());
-				this.setTitle(fyl.getName()+ " - Notepad");
-				fnameContainer=fyl;
+				File userFile = saveFile.getSelectedFile();
 				
-			}catch(Exception ers2){}
-		}*/
+				try {
+					//Create the FileWriter.
+					FileWriter fw = new FileWriter(userFile.getPath());
+					
+					//Get the text user note.
+					String text = note.getTitle()+"\n"+note.getBody();
+					
+					//A loop to white at the file.
+					for(int i=0; i<text.length();i++) {
+						fw.write(text.charAt(i));
+					}
+					
+					//Close the FileWrite.
+					fw.close();
+					
+				} catch (IOException e) {
+					Alert alertError = new Alert(Alert.AlertType.ERROR);
+					alertError.setHeaderText(null);
+					alertError.setTitle("Error");
+					alertError.setContentText("No s'ha trobat la ruta.");
+					alertError.showAndWait();
+				}
+				openNotePadWindows();
+			}
+		}
 	}
 	
-	/*public void SaveFile(String fname) throws IOException {
-		setCursor(new Cursor(Cursor.WAIT_CURSOR));
-		DataOutputStream o=new DataOutputStream(new FileOutputStream(fname));
-		o.writeBytes(jta.getText());
-		o.close();		
-		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-	}*/
+	
+	
+	/**
+	 * Method to create a note.
+	 */
+	private void createNote() {
+		if(titleNote.getText()!=null) {
+			//Create a new note object with users entry
+			
+			//TODO coger id udsuario
+	      	note = new Note(titleNote.getText(),bodyText.getText(),1);
+		}else {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+		    alert.setHeaderText(null);
+		    alert.setTitle("Error");
+		    alert.setContentText("No has introduït un títol.");
+		    alert.showAndWait();
+		}
+	}
 	
 	
 	/**

@@ -72,12 +72,12 @@
                               <TextArea fx:id="bodyText" prefHeight="304.0" prefWidth="649.0" />
                            </content>
                         </ScrollPane>
-                        <Button layoutX="480.0" layoutY="329.0" mnemonicParsing="false" onAction="#saveOnlineAction" style="-fx-background-color: #000000;" text="Save online" textFill="WHITE">
+                        <Button layoutX="480.0" layoutY="329.0" mnemonicParsing="false" onAction="#saveLocal" style="-fx-background-color: #000000;" text="Save online" textFill="WHITE">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <Button layoutX="596.0" layoutY="329.0" mnemonicParsing="false" style="-fx-background-color: #000000;" text="Save local" textFill="WHITE">
+                        <Button layoutX="596.0" layoutY="329.0" mnemonicParsing="false" onMouseClicked="#saveLocal" style="-fx-background-color: #000000;" text="Save local" textFill="WHITE">
                            <font>
                               <Font size="14.0" />
                            </font>

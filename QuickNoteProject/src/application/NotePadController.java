@@ -2,6 +2,7 @@ package application;
 
 import java.sql.*;
 import javax.sql.*;
+import javax.swing.JFileChooser;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +19,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 
 import model.Note;
+import application.NoteController;
 
 /**
  * NotePadController class.
@@ -63,6 +66,11 @@ public class NotePadController implements Initializable{
 	private ListView<String> notesListView;
 	
 	/**
+	 * A variable to store an local file. -- TODO HA DE SER FILE, pero para pruevas és String.
+	 */
+	private boolean openFile=false;
+	
+	/**
 	 * ObservableList to store the note objects.
 	 */
 	private ObservableList<Note> notes;
@@ -76,29 +84,14 @@ public class NotePadController implements Initializable{
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		notes = FXCollections.observableArrayList();
 		
-		/*notes.add(new Note("Nota","Soy una nota.",1));
+		notes.add(new Note("Nota","Soy una nota.",1));
 		notes.add(new Note("Nota2","Soy una nota 2.",2));
 		notes.add(new Note("Nota 3","Soy una nota 3.",3));
 		
+		
+		
 		//Connection to data base.	
 		/*try {
-			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
-			Statement newS = notesConnection.createStatement();
-			
-			//TODO que solo salgan las notas que queremos, con un WHERE idUser = a user logeado.
-			ResultSet result = newS.executeQuery("SELECT title FROM Note");
-			
-			//Fit the array with the SELECT result.
-			while(result.next()) {
-				notes.add(result.toString());
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}*/
-		
-		
-		//Connection to data base.	
-		try {
 			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
 			
 			//TODO comprovar el id de usuario.
@@ -107,9 +100,8 @@ public class NotePadController implements Initializable{
 			String title = note.getTitle();
 			String body = note.getBody();
 			int userId= note.getIdUser();*/
-			
-			//
-			Statement statement = notesConnection.createStatement();
+		
+			/*Statement statement = notesConnection.createStatement();
 			ResultSet sql = statement.executeQuery("SELECT title FROM Note");
            
 			
@@ -126,7 +118,7 @@ public class NotePadController implements Initializable{
 			//String title = note.getTitle();
             
             //Confirm creation.
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+           /* Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText(null);
             alert.setTitle("Informació");
             alert.setContentText("S'ha creat la connexió");
@@ -138,7 +130,7 @@ public class NotePadController implements Initializable{
 		    alert.setTitle("Error");
 		    alert.setContentText("No s'ha pogut connectar amb la base de dades.");
 		    alert.showAndWait();
-		}
+		}*/
 		
 		
 		notesListView.setItems(arrayListTitles);
@@ -150,8 +142,14 @@ public class NotePadController implements Initializable{
 	 * Method to open an external note.
 	 * @param event
 	 */
-	public void OpenExtNote(ActionEvent event) {
-		//
+	/*public void OpenExtNote() {
+		//TODO Se ha de codificar
+		
+		//Create a file selector
+		JFileChooser fileSelector=new JFileChooser();
+		
+		//Indicate what type of file the user can see
+		fileSelector.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		
 		/*File logoFile = new File();
 		Image logoImage = new Image(logoFile.toURI().toString());
@@ -162,7 +160,8 @@ public class NotePadController implements Initializable{
 		/*File iconFile = new File("/home/nasera/git/Repository_YN/Project_QuickNote/Image/Captura desde 2023-05-26 06-35-02.png");
 		Image iconImage = new Image(iconFile.toURI().toString());
 		ImageIcon.setImage(iconImage);*/
-	}
+		/*NoteController.initializeOpenFile(openFile);
+	}*/
 	
 	/**
 	 * Method to change to Note windows.
@@ -170,15 +169,7 @@ public class NotePadController implements Initializable{
 	 */
 	@FXML
 	private void newNoteAction(ActionEvent event) {
-		openNoteWindows();
-	}
-	
-	/**
-	 * Method to open a note editor.
-	 * @param event - on click.
-	 */
-	@FXML
-	private void editNoteAction(ActionEvent event) {
+		NoteController.initializeOpenFile(openFile);
 		openNoteWindows();
 	}
 	
@@ -224,7 +215,7 @@ public class NotePadController implements Initializable{
 		//TODO 
 	}
 	
-	
+	//TODO DA ERROR POR ALGUNA RAZON!!!
 	/**
 	 * Method to close the NotePad.
 	 * @param event - on click.
@@ -244,4 +235,10 @@ public class NotePadController implements Initializable{
 	/*public void scrollNotes(ActionEvent event) {
 		//TODO to implement.
 	}*/
+	
+	
+	@FXML
+	private void editNoteAction() {
+		
+	}
 }
