@@ -24,6 +24,11 @@ import java.sql.Connection;
 import java.sql.*;
 import javax.sql.*;
 
+/**
+ * NoteController class.
+ * @author Yarií Soto - Nasera Boulehoual
+ * @version 1.0, 24 May 2023
+ */
 public class NoteController implements Initializable{
 	//Variables from NoteView
 	@FXML

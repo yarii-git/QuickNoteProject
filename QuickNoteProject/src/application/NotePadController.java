@@ -31,9 +31,9 @@ import javafx.event.ActionEvent;
 import model.Note;
 
 /**
- * 
- * @author Yarií Soto - Nasera 
- *
+ * NotePadController class.
+ * @author Yarií Soto - Nasera Boulehoual
+ * @version 1.0, 24 May 2023
  */
 public class NotePadController implements Initializable{
 	

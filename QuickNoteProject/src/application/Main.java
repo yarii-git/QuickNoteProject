@@ -9,7 +9,11 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
-
+/**
+ * QuickNote main class.
+ * @author Yarií Soto - Nasera Boulehoual
+ * @version 1.0, 24 May 2023
+ */
 public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
