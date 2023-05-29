@@ -1,6 +1,11 @@
 package application;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -23,6 +28,7 @@ import java.sql.Connection;
 
 import java.sql.*;
 import javax.sql.*;
+import javax.swing.*;
 
 /**
  * NoteController class.
@@ -153,8 +159,41 @@ public class NoteController implements Initializable{
 	 * @param event
 	 */
 	public void saveLocal(ActionEvent event) {
-		//TODO 
+		
+		//TODO ESTO ES LO QUE ESTOY HACIENDO AHORA
+		
+		JFileChooser jfc=new JFileChooser();
+		
+		/*if(fnameContainer != null){
+			jfc.setCurrentDirectory(fnameContainer);		
+			jfc.setSelectedFile(fnameContainer);
+		}
+		else {
+			jfc.setCurrentDirectory(new File("."));
+			jfc.setSelectedFile(new File("Untitled.txt"));
+		}
+		
+		int ret=jfc.showSaveDialog(null);
+			
+		if(ret == JFileChooser.APPROVE_OPTION){
+			try{
+				
+				File fyl=jfc.getSelectedFile();
+				SaveFile(fyl.getAbsolutePath());
+				this.setTitle(fyl.getName()+ " - Notepad");
+				fnameContainer=fyl;
+				
+			}catch(Exception ers2){}
+		}*/
 	}
+	
+	/*public void SaveFile(String fname) throws IOException {
+		setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		DataOutputStream o=new DataOutputStream(new FileOutputStream(fname));
+		o.writeBytes(jta.getText());
+		o.close();		
+		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	}*/
 	
 	
 	/**
