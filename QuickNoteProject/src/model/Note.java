@@ -2,6 +2,7 @@ package model;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Date;
 
 
 /**
@@ -10,6 +11,11 @@ import java.time.ZoneId;
  * @version 1.0, 24 May 2023
  */
 public class Note {
+	/**
+	 * Variable to save the note id.
+	 */
+	private int idNote;
+	
 	/**
 	 * Variable to save the note date.
 	 */
@@ -46,9 +52,21 @@ public class Note {
 	/**
 	 * Second note constructor.
 	 */
-	public Note() {
+	/*public Note() {
 		super();
 		noteDate=LocalDate.now();
+	}*/
+	
+	/**
+	 * Third note constructor.
+	 */
+	public Note(int idNote, LocalDate noteDate, String title, String body) {
+		super();
+		this.idNote=idNote;
+		this.noteDate=noteDate;
+		this.title = title;
+		this.body = body;
+		
 	}
 	
 	/**

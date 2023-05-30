@@ -4,7 +4,7 @@ module QuickNoteProject {
 	requires javafx.base;
 	requires java.sql;
 	requires javafx.graphics;
-	 requires java.desktop;
+	requires java.desktop;
 	
 	opens application to javafx.graphics, javafx.fxml;
 }

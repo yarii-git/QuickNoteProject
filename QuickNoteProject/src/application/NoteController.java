@@ -72,9 +72,9 @@ public class NoteController implements Initializable{
 	private static boolean openFile;
 	
 	/**
-	 * 
+	 * ObservableList to store the note objects.
 	 */
-    //private ObservableList<Note> notes;
+	//private static ObservableList<Note> notes;
 
     /**
      * Initializes the controller class.
@@ -88,9 +88,12 @@ public class NoteController implements Initializable{
      * Method to initialize openFile.
      * @param f -a File.
      */
-    public static void initializeOpenFile(Boolean f) {
+  /*  public static void initializeNote(Boolean f, ObservableList<Note> ns) {
     	openFile=f;
-    }
+    	
+    	NotePadController.notes=ns;
+    	
+    }*/
     
     /**
      * Method to initialize the notes ObservableList
@@ -100,14 +103,6 @@ public class NoteController implements Initializable{
         this.notes = notes;
     }*/
 
-	
-	/**
-	 * Method to delete a note.
-	 * @param event
-	 */
-	public void deleteNote(ActionEvent event) {
-		//TODO 
-	}
 	
 	/**		
 	 * Method to scroll at note.
@@ -122,14 +117,14 @@ public class NoteController implements Initializable{
 	 * @param event - on click.; 
 	 */
 	@FXML
-	public void saveOnlineAction(ActionEvent event) {
+	public void saveOnlineAction() {
 		//Create a new note object with users entry.
 		createNote();
-		note = new Note(titleNote.getText(),bodyText.getText(),1);
+		//note = new Note(titleNote.getText(),bodyText.getText(),1);
 		
 		//Connection to data base.	
 		try {
-			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
+			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8622418","sql8622418","ckypqL8v3e");
 			
 			//Statement newS = notesConnection.createStatement();
 			
@@ -235,11 +230,13 @@ public class NoteController implements Initializable{
 	 * Method to create a note.
 	 */
 	private void createNote() {
+		//TODO no funciona y crea la nota igual, aunque no tenga título
 		if(titleNote.getText()!=null) {
 			//Create a new note object with users entry
 			
 			//TODO coger id udsuario
 	      	note = new Note(titleNote.getText(),bodyText.getText(),1);
+	      	
 		}else {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 		    alert.setHeaderText(null);

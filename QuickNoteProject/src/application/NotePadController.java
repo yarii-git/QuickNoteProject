@@ -2,12 +2,11 @@ package application;
 
 import java.sql.*;
 import javax.sql.*;
-import javax.swing.JFileChooser;
+import javax.swing.*;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -19,19 +18,18 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+
 import model.Note;
-import application.NoteController;
 
 /**
  * NotePadController class.
@@ -68,61 +66,66 @@ public class NotePadController implements Initializable{
 	/**
 	 * A variable to store an local file. -- TODO HA DE SER FILE, pero para pruevas és String.
 	 */
-	private boolean openFile=false;
+	static boolean openFile=false;
 	
 	/**
 	 * ObservableList to store the note objects.
 	 */
-	private ObservableList<Note> notes;
+	static ObservableList<Note> notes = FXCollections.observableArrayList();
 	
 	/**
 	 * ObservableList to store the notes title.
 	 */
-	private ObservableList<String> arrayListTitles = FXCollections.observableArrayList();;
+	private ObservableList<String> arrayListTitles = FXCollections.observableArrayList();
+	
+	
+	/**
+	 * Variable to store the current note selection.
+	 */
+	private String currentNote;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		notes = FXCollections.observableArrayList();
 		
-		notes.add(new Note("Nota","Soy una nota.",1));
+		//TESTS
+		/*notes.add(new Note("Nota","Soy una nota.",1));
 		notes.add(new Note("Nota2","Soy una nota 2.",2));
-		notes.add(new Note("Nota 3","Soy una nota 3.",3));
+		notes.add(new Note("Nota 3","Soy una nota 3.",3));*/
 		
 		
 		
 		//Connection to data base.	
-		/*try {
-			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8620870","sql8620870","Br7vTpCslf");
+		try {
+			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8622418","sql8622418","ckypqL8v3e");
 			
 			//TODO comprovar el id de usuario.
+			
 			/*
 			Date date = Date.valueOf(note.getNoteDate());
 			String title = note.getTitle();
 			String body = note.getBody();
 			int userId= note.getIdUser();*/
 		
-			/*Statement statement = notesConnection.createStatement();
-			ResultSet sql = statement.executeQuery("SELECT title FROM Note");
+			Statement statement = notesConnection.createStatement();
+			ResultSet sql = statement.executeQuery("SELECT * FROM Note");
            
-			
+			//Get the notes title.
 			while(sql.next()) {
-				arrayListTitles.add(sql.getString(1));
+				arrayListTitles.add(sql.getString(3));
 			}
 			
-			//Get the notes title.
-			/*for(Note note : notes) {
-				arrayListTitles.add(note.getTitle());
-			}*/
-			
-			
-			//String title = note.getTitle();
+			//Get the notes.
+			while(sql.next()) {
+				notes.add(new Note(sql.getInt(1),sql.getDate(2).toLocalDate(),sql.getString(3),sql.getString(4)));
+			}
             
-            //Confirm creation.
+            //Confirm creation. TESTS
            /* Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText(null);
             alert.setTitle("Informació");
             alert.setContentText("S'ha creat la connexió");
-            alert.showAndWait();
+            alert.showAndWait();*/
             
 		} catch (SQLException e) {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -130,26 +133,37 @@ public class NotePadController implements Initializable{
 		    alert.setTitle("Error");
 		    alert.setContentText("No s'ha pogut connectar amb la base de dades.");
 		    alert.showAndWait();
-		}*/
+		}
 		
-		
+		//Set the notes title at notesListView.
 		notesListView.setItems(arrayListTitles);
 		
+		//
 		notesListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		
+		//Select an item.
+		notesListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {
+				
+				currentNote = notesListView.getSelectionModel().getSelectedItem();
+			}	
+		});
 	}
 	
 	/**
 	 * Method to open an external note.
 	 * @param event
 	 */
-	/*public void OpenExtNote() {
+	private void OpenExtNote() {
 		//TODO Se ha de codificar
 		
 		//Create a file selector
-		JFileChooser fileSelector=new JFileChooser();
+		//JFileChooser fileSelector=new JFileChooser();
 		
 		//Indicate what type of file the user can see
-		fileSelector.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		//fileSelector.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		
 		/*File logoFile = new File();
 		Image logoImage = new Image(logoFile.toURI().toString());
@@ -160,8 +174,8 @@ public class NotePadController implements Initializable{
 		/*File iconFile = new File("/home/nasera/git/Repository_YN/Project_QuickNote/Image/Captura desde 2023-05-26 06-35-02.png");
 		Image iconImage = new Image(iconFile.toURI().toString());
 		ImageIcon.setImage(iconImage);*/
-		/*NoteController.initializeOpenFile(openFile);
-	}*/
+		//NoteController.initializeOpenFile(openFile);
+	}
 	
 	/**
 	 * Method to change to Note windows.
@@ -169,7 +183,7 @@ public class NotePadController implements Initializable{
 	 */
 	@FXML
 	private void newNoteAction(ActionEvent event) {
-		NoteController.initializeOpenFile(openFile);
+		//NoteController.initializeOpenFile(openFile);
 		openNoteWindows();
 	}
 	
@@ -202,8 +216,6 @@ public class NotePadController implements Initializable{
 		    alert.setContentText("No s'ha trobat la vista.");
 		    alert.showAndWait();
 		}
-		
-		
 	}
 	
 	
@@ -211,20 +223,10 @@ public class NotePadController implements Initializable{
 	 * Method to delete a note.
 	 * @param event
 	 */
-	public void deleteNote(ActionEvent event) {
-		//TODO 
-	}
-	
-	//TODO DA ERROR POR ALGUNA RAZON!!!
-	/**
-	 * Method to close the NotePad.
-	 * @param event - on click.
-	 */
-	@FXML
-	private void exitNotePad(ActionEvent event) {
-		Node source = (Node) event.getSource();
-	    Stage stage = (Stage) source.getScene().getWindow();
-	    stage.close();
+	private void deleteNote() {
+		//
+				
+		
 	}
 	
 	
@@ -240,5 +242,18 @@ public class NotePadController implements Initializable{
 	@FXML
 	private void editNoteAction() {
 		
+	}
+	
+	/**
+	 * Method to close the NotePad.
+	 * @param event - on click.
+	 */
+	@FXML
+	private void exitNotePad() {
+		/*Node source = (Node) event.getSource();
+	    Stage stage = (Stage) source.getScene().getWindow();
+	    stage.close();*/
+	     Stage stage = (Stage) this.exitButton.getScene().getWindow();
+	     stage.close();
 	}
 }
