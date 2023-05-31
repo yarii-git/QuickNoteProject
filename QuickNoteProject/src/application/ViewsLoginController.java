@@ -50,7 +50,7 @@ public class ViewsLoginController implements Initializable{
 	
 	// Controller's own variables.
 	
-	private int longinUserId; // User id.
+	public static Integer loginUserId; // User id.
 	
 	private String registeredUsername; // Registered username.
 	
@@ -103,7 +103,7 @@ public class ViewsLoginController implements Initializable{
 				NotePadController notesPadController = notesPadLoader.getController();
 				
 				// We pass the necessary data to be able to know which list we have to see.
-				notesPadController.setLonginUserId(longinUserId);
+				notesPadController.setLonginUserId(loginUserId);
 				
 				// We show the note list window
 				Stage notesPadStage = new Stage();
@@ -179,7 +179,8 @@ public class ViewsLoginController implements Initializable{
 			if (queryResult.next()) {
 	
 				// Get the ID of the user who logged in
-				longinUserId = queryResult.getInt("IdUser");
+				loginUserId = Integer.valueOf(queryResult.getInt("IdUser"));
+				System.out.println("Longin "+loginUserId);
 				
 				// We close the login window
 				Stage stage = (Stage) loginButton.getScene().getWindow();
@@ -188,10 +189,10 @@ public class ViewsLoginController implements Initializable{
 				// We show the note list window
 				FXMLLoader notesPadLoader = new FXMLLoader(getClass().getResource("/view/NotePadView.fxml"));
 				Parent notesPadRoot = notesPadLoader.load();
-				NotePadController notesPadController = notesPadLoader.getController();
+				//NotePadController notesPadController = notesPadLoader.getController();
 				
 				// We pass the necessary data to be able to know which list we have to see
-				notesPadController.setLonginUserId(Integer.valueOf(longinUserId));
+				//notesPadController.setLonginUserId(Integer.valueOf(loginUserId));
 				
 				// We show the note list window
 				Stage notesPadStage = new Stage();
@@ -239,7 +240,7 @@ public class ViewsLoginController implements Initializable{
 			RegisterController registerController= loader.getController();
 			
 			// We set the login user ID with the controller.
-			registerController.setLonginUserId(longinUserId);
+			registerController.setLonginUserId(loginUserId);
 			
 			// We show the view window
 			Stage registerStage = new Stage();

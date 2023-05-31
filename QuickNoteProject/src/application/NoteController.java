@@ -78,7 +78,7 @@ public class NoteController implements Initializable{
 	//private static ObservableList<Note> notes;
 	
 	//Variable to store the user id.
-	private static Integer userId;
+	//private static Integer userId;
 
     /**
      * Initializes the controller class.
@@ -92,9 +92,9 @@ public class NoteController implements Initializable{
      * Method to initialize openFile.
      * @param f -a File.
      */
-    public static void initializeUserId(Integer idU) {
+    /*public static void initializeUserId(Integer idU) {
     	userId=idU;
-    }
+    }*/
     
     /**
      * Method to initialize the notes ObservableList
@@ -235,7 +235,7 @@ public class NoteController implements Initializable{
 			//Create a new note object with users entry
 			
 			//TODO coger id udsuario
-			note = new Note(titleNote.getText(),bodyText.getText(),userId);
+			note = new Note(titleNote.getText(),bodyText.getText(),ViewsLoginController.loginUserId);
 	      	
 		}else {
 			Alert alert = new Alert(Alert.AlertType.ERROR);

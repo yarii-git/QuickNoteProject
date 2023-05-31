@@ -91,21 +91,23 @@ public class NotePadController implements Initializable{
 	private Note currentNote;
 	
 	//Variable to store the user id.
-	private Integer userId;
+	//private Integer userId;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		
-		notes = FXCollections.observableArrayList();
-		
 		//Connection to data base.	
 		try {
+			notes = FXCollections.observableArrayList();
+			
 			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8622418","sql8622418","ckypqL8v3e");
 			
 			//TODO comprovar el id de usuario WHERE idUser=idUserActual.
 			Statement statement = notesConnection.createStatement();
-			ResultSet sql = statement.executeQuery("SELECT * FROM Note WHERE idUser="+userId);
-			System.out.println("User "+userId);
+			
+			Integer user = (int) ViewsLoginController.loginUserId;
+			ResultSet sql = statement.executeQuery("SELECT * FROM Note WHERE idUser="+user);
+			
 			//Get the notes.
 			while(sql.next()) {
 				//Get data.
@@ -119,29 +121,28 @@ public class NotePadController implements Initializable{
 				Note n = new Note(noteId,date,title,body,userId);
 				
 				notes.add(n);
-				
-				statement.close();
-				sql.close();
 			}
+			
+			//Set the notes title at notesListView.
+			this.notesTableView.setItems(notes);
+			
+			//Link columns with attributes.
+			this.colID.setCellValueFactory(new PropertyValueFactory<Note, Integer>("idNote"));
+			this.colDate.setCellValueFactory(new PropertyValueFactory<Note, LocalDate>("noteDate"));
+			this.colTitle.setCellValueFactory(new PropertyValueFactory<Note, String>("title"));
+			this.colBody.setCellValueFactory(new PropertyValueFactory<Note, String>("body"));
+			this.colIdUser.setCellValueFactory(new PropertyValueFactory<Note, Integer>("idUser"));
+			
+			//Close resources
+			statement.close();
+			sql.close();
 		} catch (SQLException e) {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 		    alert.setHeaderText(null);
 		    alert.setTitle("Error");
-		    alert.setContentText("");
+		    alert.setContentText("Error accessing the database.");
 		    alert.showAndWait();
 		}
-		
-			
-		//Set the notes title at notesListView.
-		this.notesTableView.setItems(notes);
-		
-		//Link columns with attributes.
-		this.colID.setCellValueFactory(new PropertyValueFactory<Note, Integer>("idNote"));
-		this.colDate.setCellValueFactory(new PropertyValueFactory<Note, LocalDate>("noteDate"));
-		this.colTitle.setCellValueFactory(new PropertyValueFactory<Note, String>("title"));
-		this.colBody.setCellValueFactory(new PropertyValueFactory<Note, String>("body"));
-		this.colIdUser.setCellValueFactory(new PropertyValueFactory<Note, Integer>("idUser"));
-		
 	}
 	
 	/**
@@ -168,7 +169,7 @@ public class NotePadController implements Initializable{
 	 */
 	private void openNoteWindows() {
 		try {
-			NoteController.initializeUserId(userId);
+			
 			
 			FXMLLoader loader = new FXMLLoader();
 			
@@ -204,7 +205,6 @@ public class NotePadController implements Initializable{
 	@FXML
 	private void deleteNote() {
 		if(notesTableView.getSelectionModel().isEmpty()) {
-			
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText(null);
             alert.setTitle("Informació");
@@ -212,7 +212,6 @@ public class NotePadController implements Initializable{
             alert.showAndWait();
 		}else {
 			currentNote = notesTableView.getSelectionModel().getSelectedItem();
-			System.out.println(currentNote.getIdNote());
 			
 			
 			try {
@@ -225,7 +224,7 @@ public class NotePadController implements Initializable{
 				//Execute the statement.
 				ps.executeUpdate(); 
 				
-				
+				//Close resources.
 				ps.close();
 				
 			} catch (SQLException e) {
@@ -235,8 +234,6 @@ public class NotePadController implements Initializable{
 			    alert.setContentText("Error a la connexió amb la base de dades.");
 			    alert.showAndWait();
 			}
-			
-			
 		}
 	}
 	
@@ -303,7 +300,7 @@ public class NotePadController implements Initializable{
 	 * @param longinUserId - an user id.
 	 */
 	public void setLonginUserId(Integer longinUserId) {
-		this.userId=longinUserId;
+		//this.userId=longinUserId;
 		
 	}
 	
