@@ -90,7 +90,8 @@ public class NotePadController implements Initializable{
 	 */
 	private Note currentNote;
 	
-	private int userId;
+	//Variable to store the user id.
+	private Integer userId;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -100,11 +101,11 @@ public class NotePadController implements Initializable{
 		//Connection to data base.	
 		try {
 			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8622418","sql8622418","ckypqL8v3e");
+			
 			//TODO comprovar el id de usuario WHERE idUser=idUserActual.
-		
 			Statement statement = notesConnection.createStatement();
-			ResultSet sql = statement.executeQuery("SELECT * FROM Note");
-				
+			ResultSet sql = statement.executeQuery("SELECT * FROM Note WHERE idUser="+userId);
+			System.out.println("User "+userId);
 			//Get the notes.
 			while(sql.next()) {
 				//Get data.
@@ -118,12 +119,15 @@ public class NotePadController implements Initializable{
 				Note n = new Note(noteId,date,title,body,userId);
 				
 				notes.add(n);
+				
+				statement.close();
+				sql.close();
 			}
 		} catch (SQLException e) {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 		    alert.setHeaderText(null);
 		    alert.setTitle("Error");
-		    alert.setContentText("No s'ha pogut connectar amb la base de dades.");
+		    alert.setContentText("");
 		    alert.showAndWait();
 		}
 		
@@ -145,24 +149,7 @@ public class NotePadController implements Initializable{
 	 * @param event
 	 */
 	private void OpenExtNote() {
-		//TODO Se ha de codificar
 		
-		//Create a file selector
-		//JFileChooser fileSelector=new JFileChooser();
-		
-		//Indicate what type of file the user can see
-		//fileSelector.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		
-		/*File logoFile = new File();
-		Image logoImage = new Image(logoFile.toURI().toString());
-		imageLogo.setImage(logoImage);*/
-		
-		// Carga la image del icono atravez de la ruta donde se encuantra.
-		
-		/*File iconFile = new File("/home/nasera/git/Repository_YN/Project_QuickNote/Image/Captura desde 2023-05-26 06-35-02.png");
-		Image iconImage = new Image(iconFile.toURI().toString());
-		ImageIcon.setImage(iconImage);*/
-		//NoteController.initializeOpenFile(openFile);
 	}
 	
 	/**
@@ -172,6 +159,7 @@ public class NotePadController implements Initializable{
 	@FXML
 	private void newNoteAction(ActionEvent event) {
 		//NoteController.initializeOpenFile(openFile);
+		//NoteController.initializeUserId(userId);
 		openNoteWindows();
 	}
 	
@@ -180,6 +168,8 @@ public class NotePadController implements Initializable{
 	 */
 	private void openNoteWindows() {
 		try {
+			NoteController.initializeUserId(userId);
+			
 			FXMLLoader loader = new FXMLLoader();
 			
 			loader.setLocation(Main.class.getResource("/view/NoteView.fxml"));
@@ -223,17 +213,20 @@ public class NotePadController implements Initializable{
 		}else {
 			currentNote = notesTableView.getSelectionModel().getSelectedItem();
 			System.out.println(currentNote.getIdNote());
-			//Connection to data base.	
+			
+			
 			try {
 				Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8622418","sql8622418","ckypqL8v3e");
-				//TODO comprovar el id de usuario WHERE idUser=idUserActual.
 				
-				PreparedStatement ps = notesConnection.prepareStatement("DELETE FROM Table WHERE idNote = ?");
+				//Create a PreparedStatement.
+				PreparedStatement ps = notesConnection.prepareStatement("DELETE FROM Note WHERE idNote = ?");
 				ps.setInt(1,currentNote.getIdNote());
 				
-				
+				//Execute the statement.
 				ps.executeUpdate(); 
-				notesConnection.close();
+				
+				
+				ps.close();
 				
 			} catch (SQLException e) {
 				Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -247,19 +240,49 @@ public class NotePadController implements Initializable{
 		}
 	}
 	
-	
 	/**
-	 * Method to scroll at notes windows.
-	 * @param event - 
+	 * Method to edit a note (stored at data base).
 	 */
-	/*public void scrollNotes(ActionEvent event) {
-		//TODO to implement.
-	}*/
-	
-	
 	@FXML
 	private void editNoteAction() {
 		
+		if(notesTableView.getSelectionModel().isEmpty()) {
+			
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText(null);
+            alert.setTitle("Informació");
+            alert.setContentText("Selecciona una fila per editar.");
+            alert.showAndWait();
+		}else {
+			currentNote = notesTableView.getSelectionModel().getSelectedItem();
+			
+			try {
+				
+				FXMLLoader loader = new FXMLLoader();
+				
+				loader.setLocation(Main.class.getResource("/view/NoteView.fxml"));
+				
+				Parent windows = loader.load();
+				
+				Scene scene = new Scene(windows);
+				
+				Stage stage = new Stage();
+				
+				stage.setScene(scene);
+				
+				stage.show();
+				
+				Stage myStage = (Stage) this.exitButton.getScene().getWindow();
+				myStage.close();
+				
+			} catch (IOException e) {
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+			    alert.setHeaderText(null);
+			    alert.setTitle("Error");
+			    alert.setContentText("No s'ha trobat la vista.");
+			    alert.showAndWait();
+			}
+		}
 	}
 	
 	/**
@@ -274,8 +297,20 @@ public class NotePadController implements Initializable{
 	     Stage stage = (Stage) this.exitButton.getScene().getWindow();
 	     stage.close();
 	}
-
-	public void setLonginUserId(int longinUserId) {
+	
+	/**
+	 * Method to set the user id.
+	 * @param longinUserId - an user id.
+	 */
+	public void setLonginUserId(Integer longinUserId) {
+		this.userId=longinUserId;
 		
 	}
+	
+	/**
+	 * Method to scroll at notes windows.
+	 */
+	/*public void scrollNotes() {
+		//TODO to implement.
+	}*/
 }

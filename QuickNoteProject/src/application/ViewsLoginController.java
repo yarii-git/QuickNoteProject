@@ -125,7 +125,6 @@ public class ViewsLoginController implements Initializable{
 	 * */
 	@FXML
 	public void cancelButtonOnAction(ActionEvent event) {
-	
 		Stage stage = (Stage) cancelButton.getScene().getWindow();
 		stage.close(); // We close the login
 	}
@@ -192,7 +191,7 @@ public class ViewsLoginController implements Initializable{
 				NotePadController notesPadController = notesPadLoader.getController();
 				
 				// We pass the necessary data to be able to know which list we have to see
-				notesPadController.setLonginUserId(longinUserId);
+				notesPadController.setLonginUserId(Integer.valueOf(longinUserId));
 				
 				// We show the note list window
 				Stage notesPadStage = new Stage();
@@ -204,6 +203,9 @@ public class ViewsLoginController implements Initializable{
 				loginMessage.setText("Invalid login. Please try again");
 			}
 			
+			//Close statement and ResultSet.
+			statement.close();
+			queryResult.close();
 		} catch (Exception e) {
 			e.printStackTrace(); // We handle the exception that may occur during execution.
 

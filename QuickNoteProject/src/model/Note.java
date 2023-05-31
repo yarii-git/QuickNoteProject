@@ -47,10 +47,10 @@ public class Note {
 	 */
 	public Note(String title, String body, Integer idUser) {
 		super();
-		this.title.set(title);
-		this.body.set(body);
-		this.idUser.set(idUser);
-		noteDate.set(LocalDate.now());
+		noteDate = new SimpleObjectProperty<LocalDate>(LocalDate.now());
+		this.title = new SimpleStringProperty(title);
+		this.body = new SimpleStringProperty(body);	
+		this.idUser = new SimpleIntegerProperty(idUser);
 	}
 
 	/**

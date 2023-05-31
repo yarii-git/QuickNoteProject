@@ -33,6 +33,7 @@ import java.sql.*;
 import javax.sql.*;
 import javax.swing.*;
 
+
 /**
  * NoteController class.
  * @author Yarií Soto - Nasera Boulehoual
@@ -75,6 +76,9 @@ public class NoteController implements Initializable{
 	 * ObservableList to store the note objects.
 	 */
 	//private static ObservableList<Note> notes;
+	
+	//Variable to store the user id.
+	private static Integer userId;
 
     /**
      * Initializes the controller class.
@@ -88,12 +92,9 @@ public class NoteController implements Initializable{
      * Method to initialize openFile.
      * @param f -a File.
      */
-  /*  public static void initializeNote(Boolean f, ObservableList<Note> ns) {
-    	openFile=f;
-    	
-    	NotePadController.notes=ns;
-    	
-    }*/
+    public static void initializeUserId(Integer idU) {
+    	userId=idU;
+    }
     
     /**
      * Method to initialize the notes ObservableList
@@ -148,7 +149,7 @@ public class NoteController implements Initializable{
             ps.setInt(4,note.getIdUser());
             
             ps.executeUpdate();*/
-            
+			statement.close();
             //Confirm creation.
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText(null);
@@ -234,7 +235,7 @@ public class NoteController implements Initializable{
 			//Create a new note object with users entry
 			
 			//TODO coger id udsuario
-	      	note = new Note(titleNote.getText(),bodyText.getText(),1);
+			note = new Note(titleNote.getText(),bodyText.getText(),userId);
 	      	
 		}else {
 			Alert alert = new Alert(Alert.AlertType.ERROR);

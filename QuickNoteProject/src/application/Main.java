@@ -42,6 +42,7 @@ public class Main extends Application {
         
         // It allows us to show the scene, that is, the login.
         primaryStage.show();
+        
     }
 
     /**
