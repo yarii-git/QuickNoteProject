@@ -1,6 +1,8 @@
 package application;
 
 import java.sql.*;
+import java.time.LocalDate;
+
 import javax.sql.*;
 import javax.swing.*;
 
@@ -16,6 +18,9 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -39,94 +44,81 @@ import model.Note;
 public class NotePadController implements Initializable{
 	
 	//Variables from NoteView
-	@FXML
-	private MenuBar menuBarNotePad;
 	
-	@FXML
-	private Menu openExternalNote;
+	@FXML private MenuBar menuBarNotePad;
 	
-	@FXML
-	private Button newNote;
+	@FXML private Menu openExternalNote;
 	
-	@FXML
-	private Menu editNote;
+	@FXML private Button newNote;
 	
-	@FXML
-	private Menu deleteNote;
+	@FXML private Menu editNote;
 	
-	@FXML
-	private Button exitButton;
+	@FXML private Menu deleteNote;
 	
-	@FXML
-	private ScrollBar scrollNotes;
+	@FXML private Button exitButton;
 	
-	@FXML
-	private ListView<String> notesListView;
+	@FXML private ScrollBar scrollNotes;
+	
+	/*-----------------Table section----------------*/
+	//Table.
+	@FXML private TableView<Note> notesTableView;
+	
+	//Columns.
+	@FXML private TableColumn<Note, Integer>colID;
+	
+	@FXML private TableColumn<Note, String>colTitle;
+	
+	@FXML private TableColumn<Note, String> colBody;
+	
+	@FXML private TableColumn<Note, LocalDate> colDate;
+	
+	@FXML private TableColumn<Note, Integer> colIdUser;
+	
 	
 	/**
-	 * A variable to store an local file. -- TODO HA DE SER FILE, pero para pruevas és String.
+	 * A variable to store an local file. -- TODO HA DE SER FILE, pero para pruevas és boolean.
 	 */
 	static boolean openFile=false;
 	
 	/**
 	 * ObservableList to store the note objects.
 	 */
-	static ObservableList<Note> notes = FXCollections.observableArrayList();
-	
-	/**
-	 * ObservableList to store the notes title.
-	 */
-	private ObservableList<String> arrayListTitles = FXCollections.observableArrayList();
-	
+	static ObservableList<Note> notes;
 	
 	/**
 	 * Variable to store the current note selection.
 	 */
-	private String currentNote;
+	private Note currentNote;
+	
+	private int userId;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		
 		notes = FXCollections.observableArrayList();
-		
-		//TESTS
-		/*notes.add(new Note("Nota","Soy una nota.",1));
-		notes.add(new Note("Nota2","Soy una nota 2.",2));
-		notes.add(new Note("Nota 3","Soy una nota 3.",3));*/
-		
-		
 		
 		//Connection to data base.	
 		try {
 			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8622418","sql8622418","ckypqL8v3e");
-			
-			//TODO comprovar el id de usuario.
-			
-			/*
-			Date date = Date.valueOf(note.getNoteDate());
-			String title = note.getTitle();
-			String body = note.getBody();
-			int userId= note.getIdUser();*/
+			//TODO comprovar el id de usuario WHERE idUser=idUserActual.
 		
 			Statement statement = notesConnection.createStatement();
 			ResultSet sql = statement.executeQuery("SELECT * FROM Note");
-           
-			//Get the notes title.
-			while(sql.next()) {
-				arrayListTitles.add(sql.getString(3));
-			}
-			
+				
 			//Get the notes.
 			while(sql.next()) {
-				notes.add(new Note(sql.getInt(1),sql.getDate(2).toLocalDate(),sql.getString(3),sql.getString(4)));
+				//Get data.
+				Integer noteId= sql.getInt("idNote");
+				LocalDate date = sql.getDate("noteDate").toLocalDate() ;
+				String title = sql.getString("title");
+				String body = sql.getString("body");
+				Integer userId= sql.getInt("idUser");
+				
+				//Create note.
+				Note n = new Note(noteId,date,title,body,userId);
+				
+				notes.add(n);
 			}
-            
-            //Confirm creation. TESTS
-           /* Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText(null);
-            alert.setTitle("Informació");
-            alert.setContentText("S'ha creat la connexió");
-            alert.showAndWait();*/
-            
 		} catch (SQLException e) {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 		    alert.setHeaderText(null);
@@ -135,21 +127,17 @@ public class NotePadController implements Initializable{
 		    alert.showAndWait();
 		}
 		
+			
 		//Set the notes title at notesListView.
-		notesListView.setItems(arrayListTitles);
+		this.notesTableView.setItems(notes);
 		
-		//
-		notesListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		//Link columns with attributes.
+		this.colID.setCellValueFactory(new PropertyValueFactory<Note, Integer>("idNote"));
+		this.colDate.setCellValueFactory(new PropertyValueFactory<Note, LocalDate>("noteDate"));
+		this.colTitle.setCellValueFactory(new PropertyValueFactory<Note, String>("title"));
+		this.colBody.setCellValueFactory(new PropertyValueFactory<Note, String>("body"));
+		this.colIdUser.setCellValueFactory(new PropertyValueFactory<Note, Integer>("idUser"));
 		
-		//Select an item.
-		notesListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {
-				
-				currentNote = notesListView.getSelectionModel().getSelectedItem();
-			}	
-		});
 	}
 	
 	/**
@@ -223,10 +211,40 @@ public class NotePadController implements Initializable{
 	 * Method to delete a note.
 	 * @param event
 	 */
+	@FXML
 	private void deleteNote() {
-		//
+		if(notesTableView.getSelectionModel().isEmpty()) {
+			
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText(null);
+            alert.setTitle("Informació");
+            alert.setContentText("Selecciona una fila per esborrar.");
+            alert.showAndWait();
+		}else {
+			currentNote = notesTableView.getSelectionModel().getSelectedItem();
+			System.out.println(currentNote.getIdNote());
+			//Connection to data base.	
+			try {
+				Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8622418","sql8622418","ckypqL8v3e");
+				//TODO comprovar el id de usuario WHERE idUser=idUserActual.
 				
-		
+				PreparedStatement ps = notesConnection.prepareStatement("DELETE FROM Table WHERE idNote = ?");
+				ps.setInt(1,currentNote.getIdNote());
+				
+				
+				ps.executeUpdate(); 
+				notesConnection.close();
+				
+			} catch (SQLException e) {
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+			    alert.setHeaderText(null);
+			    alert.setTitle("Error");
+			    alert.setContentText("Error a la connexió amb la base de dades.");
+			    alert.showAndWait();
+			}
+			
+			
+		}
 	}
 	
 	
@@ -255,5 +273,9 @@ public class NotePadController implements Initializable{
 	    stage.close();*/
 	     Stage stage = (Stage) this.exitButton.getScene().getWindow();
 	     stage.close();
+	}
+
+	public void setLonginUserId(int longinUserId) {
+		
 	}
 }

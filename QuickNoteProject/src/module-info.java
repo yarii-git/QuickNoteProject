@@ -6,5 +6,10 @@ module QuickNoteProject {
 	requires javafx.graphics;
 	requires java.desktop;
 	
+    opens model to javafx.fxml;
+    
+    exports application;
+    exports model;
+    
 	opens application to javafx.graphics, javafx.fxml;
 }

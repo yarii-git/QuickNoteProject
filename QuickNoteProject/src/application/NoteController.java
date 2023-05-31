@@ -132,12 +132,11 @@ public class NoteController implements Initializable{
 			String title = note.getTitle();
 			Date date = Date.valueOf(note.getNoteDate());
 			String body = note.getBody();
-			int userId= note.getIdUser();
+			Integer userId= note.getIdUser();
 			
             
 			String sql = "insert into Note(noteDate,title,body,idUser) values('" + date + "','" + title + "','" + body + "','" + userId + "')";
            
-			// Hacemos la consexion para añadir el nuevo registro a usuario.
 			Statement statement = notesConnection.createStatement();
 			statement.executeUpdate(sql);
 						
