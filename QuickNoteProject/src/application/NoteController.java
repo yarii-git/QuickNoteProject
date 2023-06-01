@@ -62,7 +62,6 @@ public class NoteController implements Initializable{
 	
 	/**
 	 * Method to save the note online.
-	 * @param event - on click.; 
 	 */
 	@FXML
 	public void saveOnlineAction() {
