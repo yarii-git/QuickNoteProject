@@ -1,8 +1,6 @@
 package model;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 
 
 import javafx.beans.property.*;
@@ -52,14 +50,6 @@ public class Note {
 		this.body = new SimpleStringProperty(body);	
 		this.idUser = new SimpleIntegerProperty(idUser);
 	}
-
-	/**
-	 * Second note constructor.
-	 */
-	/*public Note() {
-		super();
-		noteDate=LocalDate.now();
-	}*/
 	
 	/**
 	 * Note constructor for TableView.

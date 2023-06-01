@@ -31,6 +31,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         
+    	
     	// Load the Login view.
         Parent root = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
         
@@ -50,7 +51,6 @@ public class Main extends Application {
      * 
      * @param args - Are command line arguments.
      * */
-	
 	public static void main(String[] args) {
 		launch(args);
 	}

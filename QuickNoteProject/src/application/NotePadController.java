@@ -3,8 +3,7 @@ package application;
 import java.sql.*;
 import java.time.LocalDate;
 
-import javax.sql.*;
-import javax.swing.*;
+//import javax.sql.*;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,11 +12,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.ScrollBar;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -30,9 +27,6 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
 import model.Note;
 
@@ -74,36 +68,29 @@ public class NotePadController implements Initializable{
 	
 	@FXML private TableColumn<Note, Integer> colIdUser;
 	
-	
-	/**
-	 * A variable to store an local file. -- TODO HA DE SER FILE, pero para pruevas és boolean.
-	 */
-	static boolean openFile=false;
-	
-	/**
-	 * ObservableList to store the note objects.
-	 */
+	//ObservableList to store the note objects.
 	static ObservableList<Note> notes;
 	
-	/**
-	 * Variable to store the current note selection.
-	 */
+	//Variable to store the current note selection.
 	private Note currentNote;
-	
-	//Variable to store the user id.
-	//private Integer userId;
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		
+		//Get notes lists from data base.
+		refreshTableConnection();
+	}
+	
+	/**
+	 * Method to get the notes list from the database
+	 */
+	public void refreshTableConnection() {
 		//Connection to data base.	
 		try {
 			notes = FXCollections.observableArrayList();
 			
 			Connection notesConnection = DriverManager.getConnection("jdbc:mysql://sql8.freesqldatabase.com:3306/sql8622418","sql8622418","ckypqL8v3e");
-			
-			//TODO comprovar el id de usuario WHERE idUser=idUserActual.
 			Statement statement = notesConnection.createStatement();
+			
 			
 			Integer user = (int) ViewsLoginController.loginUserId;
 			ResultSet sql = statement.executeQuery("SELECT * FROM Note WHERE idUser="+user);
@@ -140,7 +127,7 @@ public class NotePadController implements Initializable{
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 		    alert.setHeaderText(null);
 		    alert.setTitle("Error");
-		    alert.setContentText("Error accessing the database.");
+		    alert.setContentText("Failed to connect to database.");
 		    alert.showAndWait();
 		}
 	}
@@ -149,9 +136,9 @@ public class NotePadController implements Initializable{
 	 * Method to open an external note.
 	 * @param event
 	 */
-	private void OpenExtNote() {
+	/*private void openExtNote() {
 		
-	}
+	}*/
 	
 	/**
 	 * Method to change to Note windows.
@@ -169,7 +156,6 @@ public class NotePadController implements Initializable{
 	 */
 	private void openNoteWindows() {
 		try {
-			
 			
 			FXMLLoader loader = new FXMLLoader();
 			
@@ -192,7 +178,7 @@ public class NotePadController implements Initializable{
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 		    alert.setHeaderText(null);
 		    alert.setTitle("Error");
-		    alert.setContentText("No s'ha trobat la vista.");
+		    alert.setContentText("View not found.");
 		    alert.showAndWait();
 		}
 	}
@@ -207,8 +193,8 @@ public class NotePadController implements Initializable{
 		if(notesTableView.getSelectionModel().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText(null);
-            alert.setTitle("Informació");
-            alert.setContentText("Selecciona una fila per esborrar.");
+            alert.setTitle("Information");
+            alert.setContentText("Select row to delete.");
             alert.showAndWait();
 		}else {
 			currentNote = notesTableView.getSelectionModel().getSelectedItem();
@@ -231,9 +217,12 @@ public class NotePadController implements Initializable{
 				Alert alert = new Alert(Alert.AlertType.ERROR);
 			    alert.setHeaderText(null);
 			    alert.setTitle("Error");
-			    alert.setContentText("Error a la connexió amb la base de dades.");
+			    alert.setContentText("Failed to connect to database.");
 			    alert.showAndWait();
 			}
+			
+			//Get notes lists from data base.
+			refreshTableConnection();
 		}
 	}
 	
@@ -247,8 +236,8 @@ public class NotePadController implements Initializable{
 			
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText(null);
-            alert.setTitle("Informació");
-            alert.setContentText("Selecciona una fila per editar.");
+            alert.setTitle("Information");
+            alert.setContentText("Select row to edit.");
             alert.showAndWait();
 		}else {
 			currentNote = notesTableView.getSelectionModel().getSelectedItem();
@@ -276,7 +265,7 @@ public class NotePadController implements Initializable{
 				Alert alert = new Alert(Alert.AlertType.ERROR);
 			    alert.setHeaderText(null);
 			    alert.setTitle("Error");
-			    alert.setContentText("No s'ha trobat la vista.");
+			    alert.setContentText("View not found.");
 			    alert.showAndWait();
 			}
 		}
@@ -288,20 +277,8 @@ public class NotePadController implements Initializable{
 	 */
 	@FXML
 	private void exitNotePad() {
-		/*Node source = (Node) event.getSource();
-	    Stage stage = (Stage) source.getScene().getWindow();
-	    stage.close();*/
 	     Stage stage = (Stage) this.exitButton.getScene().getWindow();
 	     stage.close();
-	}
-	
-	/**
-	 * Method to set the user id.
-	 * @param longinUserId - an user id.
-	 */
-	public void setLonginUserId(Integer longinUserId) {
-		//this.userId=longinUserId;
-		
 	}
 	
 	/**

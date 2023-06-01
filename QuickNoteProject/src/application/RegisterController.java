@@ -15,7 +15,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.Statement;
@@ -58,11 +62,37 @@ public class RegisterController implements Initializable{
 		 * */
 		@Override
 		public void initialize(URL url, ResourceBundle arg1) {
+			String iconImage="";
+			String iconImageS="";
 			
-			// Load the icon image through the path where it is located.
-			File iconSignInFile = new File("../images/securityIcon.png");
-			Image iconSignInImage = new Image(iconSignInFile.toURI().toString());
-			iconSignin.setImage(iconSignInImage);		
+			// Load file with the image path.
+			File iconFile = new File("resources/files/icono_Registro.txt");
+			
+			try {
+				
+				//-----------------------Register icon----------------------
+				//Read the file.
+				FileReader rIcon = new FileReader(iconFile);
+				BufferedReader brIcon = new BufferedReader(rIcon);
+				
+				while((iconImage=brIcon.readLine())!=null) {
+					iconImageS=iconImage;
+				}
+				
+				//Show the image.
+				File iconImageImg = new File(iconImageS);
+				Image iconImageF = new Image(iconImageImg.toURI().toString());
+				iconSignin.setImage(iconImageF);
+				
+				brIcon.close();
+				
+			} catch (FileNotFoundException e) {
+				e.getMessage();
+			} catch(IOException e) {
+				e.getMessage();
+			} catch (Exception e) {
+				e.getMessage();
+			}		
 		}
 		
 		/**
@@ -72,7 +102,6 @@ public class RegisterController implements Initializable{
 		 * */
 		@FXML
 		public void cancelButtonOnAction(ActionEvent event) {
-			
 			// We close the record, if the user presses the close button it will take him to the login view.
 			Stage stage = (Stage) closeButtonS.getScene().getWindow();
 			stage.close();
@@ -230,6 +259,7 @@ public class RegisterController implements Initializable{
 				// Close the registration window
 				Stage stage = (Stage) closeButtonS.getScene().getWindow();
 				stage.close();
+				
 				
 				// We show the login window.
 				FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/view/Login.fxml"));

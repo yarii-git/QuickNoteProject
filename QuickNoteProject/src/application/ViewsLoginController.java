@@ -16,7 +16,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.event.ActionEvent;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -88,33 +91,11 @@ public class ViewsLoginController implements Initializable{
 		}
 		
 		
-		try {
-		
-			// We check if the user data is the same as the registration.
-			if (enterdUsername.equals(registeredUsername) && enterdPassword.equals(registeredPassword)) {
-				
-				// We close the login window.
-				Stage stage = (Stage) loginButton.getScene().getWindow();
-				stage.close();
-				
-				// We show the note list window.
-				FXMLLoader notesPadLoader = new FXMLLoader(getClass().getResource("/view/NotePadView.fxml"));
-				Parent notesPadRoot = notesPadLoader.load();
-				NotePadController notesPadController = notesPadLoader.getController();
-				
-				// We pass the necessary data to be able to know which list we have to see.
-				notesPadController.setLonginUserId(loginUserId);
-				
-				// We show the note list window
-				Stage notesPadStage = new Stage();
-				notesPadStage.setScene(new Scene(notesPadRoot));
-				notesPadStage.show();
-			}
+		if (enterdUsername.equals(registeredUsername) && enterdPassword.equals(registeredPassword)) {
 			
-		} catch (Exception e) {
-			// We handle the exception that may occur during execution.
-			e.printStackTrace();
-			e.getCause();
+			// We close the login window.
+			Stage stage = (Stage) loginButton.getScene().getWindow();
+			stage.close();
 		}
 	}
 	
@@ -138,16 +119,58 @@ public class ViewsLoginController implements Initializable{
 	 * */
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
+		String logoImage="";
+		String logoImageS="";
 		
-		// Load the logo image through the path where it is located.
-		File logoFile = new File("/images/quickNote.png");
-		Image logoImage = new Image(logoFile.toURI().toString());
-		imageLogo.setImage(logoImage);
+		String iconImage="";
+		String iconImageS="";
 		
-		// Load the icon image through the path where it is located.
-		File iconFile = new File("/images/userIcon.png");
-		Image iconImage = new Image(iconFile.toURI().toString());
-		ImageIcon.setImage(iconImage);
+		// Load file with the image path.
+		File logoFile = new File("resources/files/logo_Login.txt");
+		
+		// Load file with the image path.
+		File iconFile = new File("resources/files/icono_Login.txt");
+		
+		try {
+			
+			//-----------------------Logo image----------------------
+			//Read the file.
+			FileReader rLogo = new FileReader(logoFile);
+			BufferedReader br = new BufferedReader(rLogo);
+			
+			while((logoImage=br.readLine())!=null) {
+				logoImageS=logoImage;
+			}
+			
+			//Show the image.
+			File logoFileImg = new File(logoImageS);
+			Image logoImageF = new Image(logoFileImg.toURI().toString());
+			imageLogo.setImage(logoImageF);
+			
+			br.close();
+			//----------------------Icon image------------------------
+			//Read the file.
+			FileReader rIcon = new FileReader(iconFile);
+			BufferedReader brIcon = new BufferedReader(rIcon);
+			
+			while((iconImage=brIcon.readLine())!=null) {
+				iconImageS=iconImage;
+			}
+			
+			//Show the image.
+			File iconImageImg = new File(iconImageS);
+			Image iconImageF = new Image(iconImageImg.toURI().toString());
+			ImageIcon.setImage(iconImageF);
+			
+			brIcon.close();
+			
+		} catch (FileNotFoundException e) {
+			e.getMessage();
+		} catch(IOException e) {
+			e.getMessage();
+		} catch (Exception e) {
+			e.getMessage();
+		}
 	}
 	
 	
@@ -179,8 +202,8 @@ public class ViewsLoginController implements Initializable{
 			if (queryResult.next()) {
 	
 				// Get the ID of the user who logged in
+				
 				loginUserId = Integer.valueOf(queryResult.getInt("IdUser"));
-				System.out.println("Longin "+loginUserId);
 				
 				// We close the login window
 				Stage stage = (Stage) loginButton.getScene().getWindow();
@@ -230,17 +253,15 @@ public class ViewsLoginController implements Initializable{
 	public void createAccountForm() {
 		
 		try {
+			// We close the login window.
+			Stage stage = (Stage) loginButton.getScene().getWindow();
+			stage.close();
+			
 			// Load the log view.
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Register.fxml"));
 			
 			// We get the object to load the view.
 			Parent root = loader.load();
-			
-			// We get the view controller from the record.
-			RegisterController registerController= loader.getController();
-			
-			// We set the login user ID with the controller.
-			registerController.setLonginUserId(loginUserId);
 			
 			// We show the view window
 			Stage registerStage = new Stage();
