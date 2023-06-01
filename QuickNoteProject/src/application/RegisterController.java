@@ -60,7 +60,7 @@ public class RegisterController implements Initializable{
 		public void initialize(URL url, ResourceBundle arg1) {
 			
 			// Load the icon image through the path where it is located.
-			File iconSignInFile = new File("/home/nasera/git/Repository_YN/Project_QuickNote/Image/icon4.png");
+			File iconSignInFile = new File("../images/securityIcon.png");
 			Image iconSignInImage = new Image(iconSignInFile.toURI().toString());
 			iconSignin.setImage(iconSignInImage);		
 		}

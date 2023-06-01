@@ -140,12 +140,12 @@ public class ViewsLoginController implements Initializable{
 	public void initialize(URL url, ResourceBundle arg1) {
 		
 		// Load the logo image through the path where it is located.
-		File logoFile = new File("/home/nasera/git/Repository_YN/Project_QuickNote/Image/Captura desde 2023-05-26 06-21-34.png");
+		File logoFile = new File("../images/quickNote.png");
 		Image logoImage = new Image(logoFile.toURI().toString());
 		imageLogo.setImage(logoImage);
 		
 		// Load the icon image through the path where it is located.
-		File iconFile = new File("/home/nasera/git/Repository_YN/Project_QuickNote/Image/Captura desde 2023-05-26 06-35-02.png");
+		File iconFile = new File("../images/userIcon.png");
 		Image iconImage = new Image(iconFile.toURI().toString());
 		ImageIcon.setImage(iconImage);
 	}
